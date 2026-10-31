@@ -1,0 +1,3 @@
+# hostfile — DeepSpeed 多机启动用的节点清单（由 llm_cloud_provision 生成）。
+# 格式：每行 "IP slots=该节点GPU数"；需已配置 ssh 免密。
+{{HOSTFILE_LINES}}

@@ -1,0 +1,54 @@
+{
+  "name": "llm_eval_monitor",
+  "version": "0.1.0",
+  "type": "tool",
+  "category": "llm-pipeline",
+  "description": "训练监控与模型评测：ssh 拉取云端训练日志，解析 loss/lr/吞吐量并生成 SVG 曲线，命中异常模式实时告警，自动调用 lm-evaluation-harness 对 checkpoint 跑分",
+  "command": "node tools/llm_eval_monitor/index.js",
+  "license": "Apache-2.0",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "subcommand": { "enum": ["tail-log", "watch", "parse", "chart", "eval", "report"] },
+      "args": { "type": "object", "description": "子命令参数，字段等同 CLI flags" }
+    },
+    "required": ["subcommand"],
+    "additionalProperties": false
+  },
+  "subcommands": [
+    { "name": "tail-log", "desc": "拉取远端/本地日志尾部", "flags": [
+      { "name": "lines", "desc": "行数", "default": "80" },
+      { "name": "remote", "desc": "远端日志路径", "default": "" }
+    ]},
+    { "name": "watch", "desc": "增量监控 + 异常告警（15s 轮询）", "flags": [
+      { "name": "remote", "desc": "远端日志路径", "default": "" },
+      { "name": "local", "desc": "本地日志路径", "default": "" },
+      { "name": "interval", "desc": "轮询秒数", "default": "15" },
+      { "name": "max-rounds", "desc": "最大轮数（0=无限）", "default": "0" }
+    ]},
+    { "name": "parse", "desc": "全量解析 → metrics.json", "flags": [
+      { "name": "log", "desc": "日志路径", "default": "" },
+      { "name": "out", "desc": "输出 json", "default": "metrics.json" },
+      { "name": "max-points", "desc": "采样上限", "default": "5000" }
+    ]},
+    { "name": "chart", "desc": "生成 loss/吞吐 SVG 曲线", "flags": [
+      { "name": "metrics", "desc": "metrics.json 或日志", "default": "" },
+      { "name": "out", "desc": "输出目录", "default": "out/charts" }
+    ]},
+    { "name": "eval", "desc": "lm-evaluation-harness 评测（本地生成脚本/远端执行）", "flags": [
+      { "name": "model", "desc": "远端模型路径", "default": "" },
+      { "name": "tasks", "desc": "评测任务集", "default": "mmlu,hellaswag,arc_challenge,arc_easy,winogrande,piqa,truthfulqa_mc2,gsm8k" },
+      { "name": "out", "desc": "输出目录", "default": "out/eval" }
+    ]},
+    { "name": "report", "desc": "汇总 metrics+eval → markdown 报告", "flags": [
+      { "name": "metrics", "desc": "metrics.json", "default": "" },
+      { "name": "eval", "desc": "eval_results.json", "default": "" },
+      { "name": "out", "desc": "输出文件", "default": "out/charts/REPORT.md" }
+    ]}
+  ],
+  "examples": [
+    "node tools/llm_eval_monitor/index.js watch --remote /root/llm-training/train/run.log --interval 15",
+    "node tools/llm_eval_monitor/index.js parse train.log && node tools/llm_eval_monitor/index.js chart --metrics metrics.json",
+    "node tools/llm_eval_monitor/index.js eval --model /root/llm-training/ckpt/step-2000 --tasks mmlu,gsm8k"
+  ]
+}

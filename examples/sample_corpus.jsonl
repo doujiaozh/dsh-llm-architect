@@ -1,0 +1,11 @@
+{
+  "text": "自然语言处理是人工智能皇冠上的明珠。近年来，以 Transformer 为骨架的大语言模型（Large Language Model, LLM）在机器翻译、文本生成、代码补全等任务上取得了突破性进展。",
+  "meta": { "source": "wiki-zh" }
+}
+{"text": "自然语言处理是人工智能皇冠上的明珠。近年来，以 Transformer 为骨架的大语言模型（Large Language Model, LLM）在机器翻译、文本生成、代码补全等任务上取得了突破性进展。", "meta": { "source": "wiki-zh-dup" }}
+{"text": "<html><body><p>这是一段<strong>包含 HTML 标签</strong>的文本，&nbsp;里面还有实体与<script>alert(1)</script>脚本噪音。</p></body></html>", "meta": { "source": "dirty" }}
+{"text": "联系邮箱：someone@example.com，手机：13800138000，身份证号：11010119900307775X。", "meta": { "source": "pii" }}
+{"text": "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈", "meta": { "source": "spam" }}
+{"text": " DeepSeek Harness (DSH) is a local-control-plane harness:  your laptop only orchestrates , while the real GPU work happens in the cloud.  \n\n\nIt never installs CUDA locally.", "meta": { "source": "en-note" }}
+{"text": "大模型训练的四要素：算力、数据、算法、工程。算力可以租，数据可以洗，算法可以抄论文，工程能力才是从 0 到 1 的真正壁垒。", "meta": { "source": "essay" }}
+{"text": "太短", "meta": { "source": "tiny" }}

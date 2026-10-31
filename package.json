@@ -1,0 +1,27 @@
+{
+  "name": "dsh-llm-architect",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness 插件集：本地控制面 + 云端数据面的世界级 LLM 研发流水线（数据锻造 / 云算力调度 / 训练监控与评测 / 开源发布）。零依赖 Node.js，Win7 友好。",
+  "license": "Apache-2.0",
+  "author": "DSH Agent",
+  "type": "commonjs",
+  "engines": { "node": ">=16" },
+  "bin": {
+    "dsh-data-forge": "tools/llm_data_forge/index.js",
+    "dsh-cloud-provision": "tools/llm_cloud_provision/index.js",
+    "dsh-eval-monitor": "tools/llm_eval_monitor/index.js",
+    "dsh-open-source": "tools/llm_open_source/index.js",
+    "dsh-llm": "bin/dsh-llm.js"
+  },
+  "scripts": {
+    "doctor": "node bin/dsh-llm.js doctor",
+    "plan": "node bin/dsh-llm.js plan"
+  },
+  "keywords": [
+    "dsh", "deepseek-harness", "llm", "pretraining", "deepspeed", "megatron",
+    "autodl", "sagemaker", "kubernetes", "huggingface", "lm-evaluation-harness",
+    "safetensors", "open-source", "win7"
+  ],
+  "homepage": "https://github.com/your-org/dsh-llm-architect",
+  "repository": { "type": "git", "url": "https://github.com/your-org/dsh-llm-architect.git" }
+}

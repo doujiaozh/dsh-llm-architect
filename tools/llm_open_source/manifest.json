@@ -1,0 +1,51 @@
+{
+  "name": "llm_open_source",
+  "version": "0.1.0",
+  "type": "tool",
+  "category": "llm-pipeline",
+  "description": "模型转换与开源发布：云端 PyTorch 权重 → Safetensors（含 ZeRO-3 合并），自动生成模型卡 README 与 LICENSE，一键推送到 HuggingFace Hub",
+  "command": "node tools/llm_open_source/index.js",
+  "license": "Apache-2.0",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "subcommand": { "enum": ["convert", "readme", "license", "publish", "release"] },
+      "args": { "type": "object", "description": "子命令参数，字段等同 CLI flags" }
+    },
+    "required": ["subcommand"],
+    "additionalProperties": false
+  },
+  "subcommands": [
+    { "name": "convert", "desc": "生成/执行 Safetensors 转换脚本", "flags": [
+      { "name": "src", "desc": "远端 checkpoint 目录", "default": "" },
+      { "name": "dst", "desc": "本地输出目录", "default": "out/model_release" },
+      { "name": "from", "desc": "hf | zero3", "default": "hf" },
+      { "name": "dtype", "desc": "bfloat16|float16|float32", "default": "bfloat16" },
+      { "name": "dry-run", "desc": "只生成脚本", "default": "false" }
+    ]},
+    { "name": "readme", "desc": "生成模型卡 README.md", "flags": [
+      { "name": "name", "desc": "模型名", "default": "dsh-llm-base" },
+      { "name": "org", "desc": "组织/用户名", "default": "$HF_USER" },
+      { "name": "params", "desc": "参数量（整数）", "default": "0" },
+      { "name": "metrics", "desc": "metrics.json（取 steps/loss）", "default": "" },
+      { "name": "eval", "desc": "eval_results.json（Benchmark 表）", "default": "" },
+      { "name": "out", "desc": "输出路径", "default": "out/model_release/README.md" }
+    ]},
+    { "name": "license", "desc": "生成 LICENSE", "flags": [
+      { "name": "kind", "desc": "apache-2.0 | mit | llama3", "default": "apache-2.0" },
+      { "name": "holder", "desc": "版权持有人", "default": "$HF_USER" },
+      { "name": "out", "desc": "输出目录", "default": "out/model_release" }
+    ]},
+    { "name": "publish", "desc": "推送到 HuggingFace Hub", "flags": [
+      { "name": "repo", "desc": "<user>/<name>", "default": "$HF_USER/dsh-llm-base" },
+      { "name": "dir", "desc": "发布目录", "default": "out/model_release" },
+      { "name": "dry-run", "desc": "只打印命令", "default": "false" }
+    ]},
+    { "name": "release", "desc": "一条龙: convert → readme → license → publish", "flags": [] }
+  ],
+  "examples": [
+    "node tools/llm_open_source/index.js release --src /root/llm-training/ckpt/step-600 --name dsh-llm-1.3b --params 1300000000 --repo dsh-architect/dsh-llm-1.3b --dry-run",
+    "node tools/llm_open_source/index.js readme --name dsh-llm-1.3b --metrics metrics.json --eval out/eval/eval_results.json",
+    "node tools/llm_open_source/index.js convert --from zero3 --src /root/llm-training/ckpt/step-3000"
+  ]
+}

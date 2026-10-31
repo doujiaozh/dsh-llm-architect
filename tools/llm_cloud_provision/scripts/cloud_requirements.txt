@@ -1,0 +1,18 @@
+# cloud_requirements.txt — 云端训练节点 Python 依赖（由 llm_cloud_provision 引用）
+# 说明：本地 Win7 控制面绝不安装这些包；仅在云端 GPU 节点执行 pip install -r
+torch>=2.1,<2.5
+transformers>=4.40,<5.0
+datasets>=2.19,<3.0
+accelerate>=0.30,<2.0
+deepspeed>=0.14,<0.16
+flash-attn>=2.5 ; platform_system == "Linux"
+safetensors>=0.4
+tokenizers>=0.19
+sentencepiece>=0.2
+numpy>=1.26,<2.3
+tqdm
+tensorboard
+wandb ; environment_variable("WANDB_TOKEN") != ""
+# Megatron-LM（可选，按需取消注释）
+# megatron-core>=0.11
+# apex ; platform_system == "Linux"

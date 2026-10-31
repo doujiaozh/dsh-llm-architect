@@ -1,0 +1,65 @@
+{
+  "name": "llm_cloud_provision",
+  "version": "0.1.0",
+  "type": "tool",
+  "category": "llm-pipeline",
+  "description": "云端算力调度与训练下发：生成 AutoDL/AWS SageMaker/K8s 部署脚本、DeepSpeed/Megatron 分布式训练启动脚本，一键推送训练任务到远程 GPU 集群",
+  "command": "node tools/llm_cloud_provision/index.js",
+  "license": "Apache-2.0",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "subcommand": {
+        "enum": ["autodel", "sagemaker", "k8s", "train-script", "push", "status", "cluster-setup"]
+      },
+      "args": { "type": "object", "description": "子命令参数，字段等同 CLI flags" }
+    },
+    "required": ["subcommand"],
+    "additionalProperties": false
+  },
+  "subcommands": [
+    { "name": "autodel", "desc": "AutoDL 环境初始化包（shell + OpenAPI python）", "flags": [
+      { "name": "out", "desc": "输出目录", "default": "out/cloud/autodel" },
+      { "name": "remote-workdir", "desc": "远端工作目录", "default": "/root/llm-training" }
+    ]},
+    { "name": "sagemaker", "desc": "AWS SageMaker 提交脚本", "flags": [
+      { "name": "instance-type", "desc": "实例类型", "default": "ml.g5.48xlarge" },
+      { "name": "instance-count", "desc": "实例数", "default": "1" },
+      { "name": "job-name", "desc": "任务名", "default": "dsh-llm-train" }
+    ]},
+    { "name": "k8s", "desc": "K8s Job / MPIJob 清单", "flags": [
+      { "name": "gpus", "desc": "每节点 GPU 数", "default": "8" },
+      { "name": "nodes", "desc": "节点数", "default": "1" },
+      { "name": "image", "desc": "容器镜像", "default": "your-registry/dsh-llm-trainer:latest" },
+      { "name": "pvc", "desc": "数据卷", "default": "llm-data-pvc" }
+    ]},
+    { "name": "train-script", "desc": "DeepSpeed/Megatron 训练启动脚本", "flags": [
+      { "name": "framework", "desc": "deepspeed|megatron", "default": "deepspeed" },
+      { "name": "gpus", "desc": "每节点 GPU 数", "default": "8" },
+      { "name": "nodes", "desc": "节点数", "default": "1" },
+      { "name": "zero", "desc": "ZeRO stage 1|2|3", "default": "2" },
+      { "name": "tp", "desc": "Megatron 张量并行", "default": "8" },
+      { "name": "pp", "desc": "Megatron 流水并行", "default": "1" },
+      { "name": "hosts", "desc": "多机 IP 列表", "default": "" },
+      { "name": "model-config", "desc": "模型结构 json", "default": "configs/model_config_llama_1.3b.json" }
+    ]},
+    { "name": "push", "desc": "一键推送训练任务到远程 GPU 节点", "flags": [
+      { "name": "local", "desc": "本地目录", "default": "out/cloud/train" },
+      { "name": "remote", "desc": "远端路径", "default": "" },
+      { "name": "start", "desc": "远端启动命令", "default": "" },
+      { "name": "no-exec", "desc": "只传文件", "default": "false" },
+      { "name": "tar", "desc": "tar 流式传输", "default": "false" },
+      { "name": "dry-run", "desc": "只打印", "default": "false" }
+    ]},
+    { "name": "status", "desc": "远程节点状态（GPU/磁盘/ckpt/日志）", "flags": [] },
+    { "name": "cluster-setup", "desc": "多机集群环境准备脚本", "flags": [
+      { "name": "hosts", "desc": "节点 IP 列表", "default": "" },
+      { "name": "gpus", "desc": "每节点 GPU 数", "default": "8" }
+    ]}
+  ],
+  "examples": [
+    "node tools/llm_cloud_provision/index.js train-script --framework deepspeed --gpus 8 --zero 3",
+    "node tools/llm_cloud_provision/index.js push --start 'bash train_deepspeed.sh' --dry-run",
+    "node tools/llm_cloud_provision/index.js k8s --nodes 2"
+  ]
+}

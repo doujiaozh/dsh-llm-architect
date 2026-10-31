@@ -1,0 +1,71 @@
+{
+  "name": "llm_data_forge",
+  "version": "0.1.0",
+  "type": "tool",
+  "category": "llm-pipeline",
+  "description": "数据锻造与清洗：数据集下载脚本生成、本地纯 Node.js 清洗去重去噪 PII 脱敏、云端 Tokenizer 训练配置",
+  "command": "node tools/llm_data_forge/index.js",
+  "license": "Apache-2.0",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "subcommand": {
+        "enum": ["download", "clean", "dedupe", "tokenizer-config", "forge"]
+      },
+      "args": {
+        "type": "object",
+        "description": "子命令参数，字段等同 CLI flags（input/out/source/dedupe/lang/...）"
+      }
+    },
+    "required": ["subcommand"],
+    "additionalProperties": false
+  },
+  "subcommands": [
+    { "name": "download", "desc": "生成数据集下载脚本（huggingface/wikipedia/commoncrawl/custom）", "flags": [
+      { "name": "source", "desc": "数据源", "default": "" },
+      { "name": "dataset-id", "desc": "HF 数据集 ID", "default": "wikimedia/wikipedia" },
+      { "name": "split", "desc": "切分名", "default": "train" },
+      { "name": "lang", "desc": "语言", "default": "zh" },
+      { "name": "limit-docs", "desc": "取前 N 条", "default": "0" },
+      { "name": "out", "desc": "输出目录", "default": "out/data" }
+    ]},
+    { "name": "clean", "desc": "本地流式清洗（去HTML/规范化/质量过滤/去重/PII脱敏）", "flags": [
+      { "name": "input", "desc": "输入文件/目录", "default": "" },
+      { "name": "out", "desc": "输出 jsonl", "default": "" },
+      { "name": "min-chars", "desc": "最小字符数", "default": "100" },
+      { "name": "max-chars", "desc": "最大字符数", "default": "100000" },
+      { "name": "lang", "desc": "语言过滤", "default": "auto" },
+      { "name": "dedupe", "desc": "none|exact|minhash", "default": "none" },
+      { "name": "redact-pii", "desc": "PII 脱敏", "default": "false" },
+      { "name": "strip-html", "desc": "HTML 剥离", "default": "true" },
+      { "name": "normalize", "desc": "NFKC 规范化", "default": "true" },
+      { "name": "drop-repeat-lines", "desc": "删重复行/刷屏行", "default": "true" },
+      { "name": "quality-filter", "desc": "质量过滤", "default": "true" },
+      { "name": "shingles", "desc": "MinHash n-gram", "default": "5" },
+      { "name": "bands", "desc": "LSH 带数", "default": "16" },
+      { "name": "rows", "desc": "LSH 行数", "default": "8" },
+      { "name": "stats", "desc": "统计报告路径", "default": "" }
+    ]},
+    { "name": "dedupe", "desc": "独立去重（exact/minhash）", "flags": [
+      { "name": "input", "desc": "输入", "default": "" },
+      { "name": "out", "desc": "输出", "default": "" },
+      { "name": "mode", "desc": "exact|minhash", "default": "minhash" }
+    ]},
+    { "name": "tokenizer-config", "desc": "生成 Tokenizer 训练配置与云端脚本", "flags": [
+      { "name": "vocab-size", "desc": "词表大小", "default": "32000" },
+      { "name": "model", "desc": "bpe|unigram|wordpiece", "default": "bpe" },
+      { "name": "langs", "desc": "语言", "default": "zh,en" },
+      { "name": "out", "desc": "输出目录", "default": "out/tokenizer" },
+      { "name": "corpus", "desc": "语料路径", "default": "clean.jsonl" }
+    ]},
+    { "name": "forge", "desc": "按配置编排完整云端数据流水线", "flags": [
+      { "name": "config", "desc": "json 配置", "default": "" },
+      { "name": "out", "desc": "输出目录", "default": "out/forge" }
+    ]}
+  ],
+  "examples": [
+    "node tools/llm_data_forge/index.js clean --input examples/sample_corpus.jsonl --out out/data/clean.jsonl --dedupe minhash --redact-pii --stats out/data/report.json",
+    "node tools/llm_data_forge/index.js download --source commoncrawl --limit-shards 2 --out out/data",
+    "node tools/llm_data_forge/index.js tokenizer-config --vocab-size 32000 --out out/tok"
+  ]
+}

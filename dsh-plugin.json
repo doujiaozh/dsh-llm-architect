@@ -1,0 +1,55 @@
+{
+  "name": "dsh-llm-architect",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness 底层插件集：让 Agent 具备从零规划、数据锻造、云端调度训练、评测并开源一个世界级 LLM 的全套能力。控制面在本地（Win7/Node.js 零依赖），数据面在云端（生成 GPU 服务器可直接执行的 Python/Bash 脚本）。",
+  "license": "Apache-2.0",
+  "type": "bundle",
+  "architecture": "local-control-plane + cloud-data-plane",
+  "constraints": {
+    "local": "禁止本地安装 CUDA/PyTorch/原生 C++ 扩展；本地仅运行纯 Node.js 与可选的纯 Python 计算",
+    "cloud": "所有训练/转换/评测计算均由生成的云端脚本在远程 GPU 节点执行"
+  },
+  "tools": [
+    {
+      "name": "llm_data_forge",
+      "command": "node tools/llm_data_forge/index.js",
+      "manifest": "tools/llm_data_forge/manifest.json",
+      "purpose": "数据锻造：数据集下载脚本生成、纯 Node.js 本地清洗/去重/PII 脱敏、云端 Tokenizer 训练配置"
+    },
+    {
+      "name": "llm_cloud_provision",
+      "command": "node tools/llm_cloud_provision/index.js",
+      "manifest": "tools/llm_cloud_provision/manifest.json",
+      "purpose": "云端算力调度：AutoDL/SageMaker/K8s 部署脚本、DeepSpeed/Megatron-LM 分布式训练启动脚本、一键推送训练任务到远程 GPU 集群"
+    },
+    {
+      "name": "llm_eval_monitor",
+      "command": "node tools/llm_eval_monitor/index.js",
+      "manifest": "tools/llm_eval_monitor/manifest.json",
+      "purpose": "训练监控与评测：SSH 日志拉取、Loss/LR/吞吐量解析与 SVG 曲线、lm-evaluation-harness 自动评测、Markdown 报告"
+    },
+    {
+      "name": "llm_open_source",
+      "command": "node tools/llm_open_source/index.js",
+      "manifest": "tools/llm_open_source/manifest.json",
+      "purpose": "开源发布：PyTorch 权重转 Safetensors、模型卡 README 生成、许可证、一键推送 HuggingFace Hub"
+    }
+  ],
+  "skills": [
+    "skills/skill_data_forge.md",
+    "skills/skill_cloud_train.md",
+    "skills/skill_eval_monitor.md",
+    "skills/skill_open_source.md"
+  ],
+  "configs": [
+    "configs/ds_config_zero2.json",
+    "configs/ds_config_zero3.json",
+    "configs/model_config_llama_1.3b.json"
+  ],
+  "env": ".env.example",
+  "runtime": {
+    "node": ">=16",
+    "python": "optional（仅用于云端脚本的本地预览执行）",
+    "cuda": "forbidden on local host"
+  }
+}

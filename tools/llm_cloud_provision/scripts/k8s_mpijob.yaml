@@ -1,0 +1,52 @@
+# k8s_mpijob.yaml — 多机分布式 MPIJob（由 llm_cloud_provision 生成）。
+# 前提：集群已装 MPI Operator（kubectl get crd mpijobs.kubeflow.org）。
+apiVersion: kubeflow.org/v2beta1
+kind: MPIJob
+metadata:
+  name: {{JOB_NAME}}
+  labels:
+    app: dsh-llm-training
+spec:
+  slotsPerWorker: {{SLOTS_PER_WORKER}}
+  runPolicy:
+    cleanPodPolicy: Running
+    backoffLimit: 2
+  mpiReplicaSpecs:
+    Launcher:
+      replicas: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: mpi-launcher
+              image: {{IMAGE}}
+              command: ["/bin/bash", "-c"]
+              args:
+                - |
+                  set -euo pipefail
+                  mpirun -np {{NP}} -bind-to none -map-by slot \
+                    -x NCCL_DEBUG=WARN -x NCCL_IB_DISABLE=0 \
+                    bash /workspace/scripts/train_deepspeed.sh
+              resources:
+                limits: { cpu: 16, memory: 64Gi }
+    Worker:
+      replicas: {{WORKER_REPLICAS}}
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: mpi-worker
+              image: {{IMAGE}}
+              resources:
+                limits:
+                  nvidia.com/gpu: {{SLOTS_PER_WORKER}}
+                  memory: 400Gi
+                  cpu: 64
+              volumeMounts:
+                - { name: data, mountPath: /workspace/data }
+                - { name: dshm, mountPath: /dev/shm }
+          volumes:
+            - name: data
+              persistentVolumeClaim: { claimName: {{PVC_NAME}} }
+            - name: dshm
+              emptyDir: { medium: Memory, sizeLimit: 64Gi }

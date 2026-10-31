@@ -1,0 +1,46 @@
+# k8s_job.yaml — 单机多卡 Kubernetes Job（由 llm_cloud_provision 生成）。
+# 前提：集群已装 NVIDIA Device Plugin + 支持 GPU 的调度。
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{JOB_NAME}}
+  labels:
+    app: dsh-llm-training
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 86400
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: trainer
+          image: {{IMAGE}}
+          imagePullPolicy: IfNotPresent
+          workingDir: /workspace
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -euo pipefail
+              nvidia-smi
+              bash scripts/train_deepspeed.sh
+          env:
+            - name: HF_TOKEN
+              valueFrom:
+                secretKeyRef: { name: hf-secret, key: token }
+            - name: NCCL_DEBUG
+              value: "WARN"
+            - name: TOKENIZERS_PARALLELISM
+              value: "false"
+          resources:
+            limits:
+              nvidia.com/gpu: {{NUM_GPUS}}
+              memory: 400Gi
+              cpu: 64
+          volumeMounts:
+            - { name: data, mountPath: /workspace/data }
+            - { name: dshm, mountPath: /dev/shm }
+      volumes:
+        - name: data
+          persistentVolumeClaim: { claimName: {{PVC_NAME}} }
+        - name: dshm
+          emptyDir: { medium: Memory, sizeLimit: 64Gi }

@@ -1,0 +1,63 @@
+LLAMA 3 COMMUNITY LICENSE AGREEMENT
+
+Llama 3 Version Release Date: April 18, 2024
+
+"Agreement" means the terms and conditions for use, reproduction and
+distribution of the Llama 3 Materials as defined herein.
+
+"Documentation" means the specifications, manuals and documentation
+accompanying Llama 3 Materials.
+
+"Licensee" or "you" means you, or your employer or any other person or
+entity (if you are entering into this Agreement on such person or entity's
+behalf), of the age required under applicable laws in your country to enter
+into a binding contract.
+
+"Meta" or "Meta Platforms Ireland Limited" means Meta Platforms Ireland
+Limited (if you are located in or are a business resident of Europe, the
+Middle East, Africa, Latin America or the Asia-Pacific region) or Meta
+Platforms, Inc. (if you are located in or are a business resident of the
+United States, Canada or elsewhere).
+
+"Llama Materials" means, collectively, Meta's Llama 3 and Llama 3.1 models
+(including the Llama 3.1 8B, 70B and 405B models) and Documentation.
+
+1. License Rights and Redistribution.
+
+   a. Grant of Rights. Meta grants you a non-exclusive, worldwide,
+   non-transferable and royalty-free limited license under Meta's
+   intellectual property or other rights owned by Meta embodied in the
+   Llama Materials to use, reproduce, distribute, copy, create derivative
+   works of, and make modifications to the Llama Materials.
+
+   b. Redistribution and Use.
+
+      i. Distribution and Reproduction. You may reproduce and distribute
+      copies of the Llama Materials and derivative works thereof (whether
+      in whole or in part) in source or binary form, provided that you
+      meet the following conditions: (a) this Agreement and the notice
+      below are included; (b) you include the attribution notice set forth
+      below in any copies of the Llama Materials or derivative works
+      (including the notice in the source code form); and (c) if you
+      distribute the Llama Materials or derivative works, you shall include
+      a copy of this Agreement.
+
+      ii. Modified Versions. If you modify the Llama Materials, the
+      modified materials must carry prominent notices stating that you
+      changed the materials.
+
+      iii. Additional Commercial Terms. If you have more than 700 million
+      monthly active users, you must request a license from Meta.
+
+2. Disclaimer of Warranty. UNLESS REQUIRED BY APPLICABLE LAW, META
+PROVIDES THE LLAMA MATERIALS ON AN "AS IS" BASIS, WITHOUT WARRANTIES
+OF ANY KIND.
+
+3. Limitation of Liability. IN NO EVENT WILL META BE LIABLE FOR ANY
+DAMAGES ARISING OUT OF OR IN CONNECTION WITH THIS LICENSE.
+
+4. Trademark. This Agreement does not grant you permission to use any
+Meta trademarks.
+
+This is a summary of the Llama 3 Community License Agreement; the full
+text is available at https://llama.meta.com/llama3/license.
