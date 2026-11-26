@@ -45,3 +45,10 @@ htmlcov/
 dist/
 build/
 *.so
+.next/
+coverage/
+*.tsbuildinfo
+.npm/
+.pnpm-store/
+yarn-error.log
+*.tgz
